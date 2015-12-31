@@ -1,0 +1,14 @@
+# OSX files
+.DS_Store
+# IntelliJ project files
+.idea
+out
+gen
+_ide_helper.php
+.env
+.composer.lock
+.comploser.phar
+/vendor
+/node_modules
+/data/cache/*
+/data/log/*
