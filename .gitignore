@@ -10,5 +10,3 @@ _ide_helper.php
 .comploser.phar
 /vendor
 /node_modules
-/data/cache/*
-/data/log/*
