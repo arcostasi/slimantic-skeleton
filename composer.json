@@ -1,25 +1,30 @@
 {
-    "name": "arcostasi/slimantic-skeleton",
-    "description": "Simple Slim Framework 3 skeleton with Twig & Semantic-UI.",
-    "license": "BSD-3-Clause",
-    "type": "project",
-    "keywords": ["slim-framework", "skeleton"],
-    "authors": [
-        {
-            "name": "Anderson Costa",
-            "email": "arcostasi@gmail.com",
-            "homepage": "http://arcostasi.com/"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "App\\": "app/src"
-        }
-    },
-    "require": {
-        "slim/slim": "^3.0",
-        "slim/twig-view": "^2.0",
-        "slim/flash": "^0.1.0",
-        "monolog/monolog": "^1.17"
+  "name": "arcostasi/slimantic-skeleton",
+  "description": "Simple Slim Framework 3 skeleton with Twig & Semantic-UI.",
+  "license": "BSD-3-Clause",
+  "type": "project",
+  "keywords": [
+    "slim-framework",
+    "skeleton"
+  ],
+  "authors": [
+    {
+      "name": "Anderson Costa",
+      "email": "arcostasi@gmail.com",
+      "homepage": "http://arcostasi.com/"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/src"
+    }
+  },
+  "require": {
+    "slim/slim": "^3.0",
+    "slim/twig-view": "^2.0",
+    "slim/flash": "^0.1.0",
+    "illuminate/database": "^5.2",
+    "monolog/monolog": "^1.17",
+    "vlucas/phpdotenv": "^2.2"
+  }
 }

@@ -19,9 +19,25 @@ $container['view'] = function ($c) {
     return $view;
 };
 
+$container['json'] = function ($c) {
+    return new \App\Provider\JsonViewProvider();
+};
+
 // Flash messages
 $container['flash'] = function ($c) {
     return new \Slim\Flash\Messages;
+};
+
+// Service databases
+$container['database'] = function ($c) {
+    $settings = $c->get('settings');
+    $default = $settings['database']['connections'][$settings['database']['default']];
+
+    // Capsule aims to make configuring the library for usage outside of the
+    // Laravel framework as easy as possible.
+    $database = new \App\Provider\DatabaseProvider($default);
+
+    return $database;
 };
 
 // -----------------------------------------------------------------------------
@@ -43,5 +59,9 @@ $container['logger'] = function ($c) {
 // -----------------------------------------------------------------------------
 
 $container['App\Controller\IndexController'] = function ($c) {
-    return new App\Controller\IndexController($c->get('view'), $c->get('logger'));
+    return new App\Controller\IndexController($c->get('view'), $c->get('json'), $c->get('logger'));
+};
+
+$container['App\Controller\UserController'] = function ($c) {
+    return new App\Controller\UserController($c->get('view'), $c->get('json'), $c->get('logger'), $c->get('database'));
 };

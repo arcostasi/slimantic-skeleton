@@ -2,22 +2,14 @@
 
 namespace App\Model;
 
+use Illuminate\Database\Eloquent\Model as Eloquent;
+
 /**
  * Base Model.
  *
  * @package App\Model
  */
-class BaseModel
+abstract class BaseModel extends Eloquent
 {
-    protected $db;
 
-    /**
-     * Database Connect.
-     *
-     * @param $db
-     */
-    function __construct($db)
-    {
-        $this->db = $db;
-    }
 }

@@ -8,7 +8,7 @@ define('PATH_DATA', PATH_ROOT . '/data');
 define('PATH_CACHE', PATH_DATA . '/cache');
 define('PATH_LOG', PATH_DATA . '/log');
 
-chdir(dirname(__DIR__));
+chdir(PATH_ROOT);
 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
@@ -20,6 +20,9 @@ if (PHP_SAPI == 'cli-server') {
 }
 
 require PATH_ROOT . '/vendor/autoload.php';
+
+$dotenv = new Dotenv\Dotenv(PATH_ROOT);
+$dotenv->load();
 
 session_start();
 
