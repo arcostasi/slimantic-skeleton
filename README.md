@@ -5,7 +5,7 @@ This is a micro MVC skeleton for Slim 3 that includes Twig & Semantic UI
 
 See the [online demo](http://arcostasi.com/slimantic/).
 
-This skeleton use Composer, Slim 3, Monolog, Twig, jQuery and Semantic UI
+This skeleton use Composer, Slim 3, Eloquent, Monolog, Twig, jQuery and Semantic UI
 
 ## Quick start
 
