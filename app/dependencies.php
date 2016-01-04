@@ -23,6 +23,88 @@ $container['json'] = function ($c) {
     return new \App\Provider\JsonViewProvider();
 };
 
+$container['errorHandler'] = function ($c) {
+    return function ($request, $response, $exception) use ($c) {
+        $settings = $c->get('settings');
+        $statusCode = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 400;
+
+        $c['response']->withStatus($statusCode);
+
+        $debug = $settings['displayErrorDetails'] == 'true' ? true : false;
+
+        $title = $debug ? 
+            'The application could not run because of the following error:' : 
+            'A website error has occurred. Sorry for the temporary inconvenience.';
+
+        $header = $request->getHeaders();
+        $message = $exception->getMessage();
+
+        $json = isset($header['HTTP_CONTENT_TYPE'][0]) && $header['HTTP_CONTENT_TYPE'][0] == 'application/json';
+
+        // Check content-type is application/json
+        if ($json) {
+            $c['response']->withHeader('Content-Type', 'application/json');
+            $error = [
+                'status' => 'error',
+                'error' => $title,
+                'statusCode' => $statusCode
+            ];
+            // Check debug
+            if ($debug) {
+                $error['details'] = [
+                    'message' => $message,
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'code' => $exception->getCode()
+                ];
+            }
+        } else {
+            $c['response']->withHeader('Content-Type', 'text/html');
+            $message = sprintf('<span>%s</span>', htmlentities($message));
+            $error = [
+                'type' => get_class($exception),
+                'message' => $message
+            ];
+            // Check debug
+            if ($debug) {
+                $trace = $exception->getTraceAsString();
+                $trace = sprintf('<pre>%s</pre>', htmlentities($trace));
+                $error['file'] = $exception->getFile();
+                $error['line'] = $exception->getLine();
+                $error['code'] = $exception->getCode();
+                $error['trace'] = $trace;
+            }
+        }
+
+        if ($json) {
+            $view = $c['json']->render($c['response'], $error, $statusCode);
+        } else {
+            $error['debug'] = $debug;
+            $error['title'] = $title;
+            $view = $c['view']->render($c['response'], 'error/error.twig', $error);
+        }
+
+        return $view;
+    };
+};
+
+$container['notFoundHandler'] = function ($c) {
+    return function ($request, $response) use ($c) {
+        $c['response']->withStatus(404)
+              ->withHeader('Content-Type', 'text/html');
+        return $c['view']->render($c['response'], 'error/error404.twig');
+    };
+};
+
+$container['notAllowedHandler'] = function ($c) {
+    return function ($request, $response, $methods) use ($c) {
+        $c['response']->withStatus(405)
+              ->withHeader('Content-Type', 'text/html');
+        $allow = implode(', ', $methods);
+        return $c['view']->render($c['response'], 'error/error405.twig', $allow);
+    };
+};
+
 // Flash messages
 $container['flash'] = function ($c) {
     return new \Slim\Flash\Messages;

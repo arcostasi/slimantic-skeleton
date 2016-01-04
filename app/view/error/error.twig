@@ -1,0 +1,21 @@
+{% extends "layout/error.twig" %}
+{% block content %}
+<br>
+<div class="ui main error message container">
+    <h1 class="ui dividing header"><i class="warning sign icon"></i>Oops! An Error Occurred</h1>
+    <h4>{{ title }}</h4>
+    {% if debug %}
+        <h3>Details</h3>
+        <ul class="list">
+            <li><strong>Type:</strong> {{ type }}</li>
+            <li><strong>Message:</strong> {{ message|raw }}</li>
+            <li><strong>File:</strong> <span>{{ file }}</span></li>
+            <li><strong>Line:</strong> <span>{{ line }}</span></li>
+        </ul>
+        <h3>Trace</h3>
+        <ul class="list">
+            {{ trace|raw }}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

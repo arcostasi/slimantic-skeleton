@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Http\HttpException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -25,5 +26,15 @@ class IndexController extends BaseController
         $this->view->render($response, 'index/home.twig');
 
         return $response;
+    }
+
+    /**
+     * Test exception.
+     *
+     * @return App\Http\HttpException
+     */
+    public function test(Request $request, Response $response, $args)
+    {
+        throw new HttpException('Erro de Authenticação');
     }
 }

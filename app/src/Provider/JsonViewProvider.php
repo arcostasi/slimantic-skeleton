@@ -20,7 +20,7 @@ class JsonViewProvider
         $status = intval($status);
         // Set content-type
         $json = $response->withStatus($status)
-            ->withHeader('Content-Type', 'application/json');
+            ->withHeader('Content-Type', 'application/json; charset=UTF-8');
         // Set content body
         $json->getBody()
             ->write(json_encode($data));

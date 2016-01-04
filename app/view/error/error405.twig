@@ -1,0 +1,8 @@
+{% extends "layout/error.twig" %}
+{% block content %}
+<br>
+<div class="ui main error message container">
+    <h1 class="ui dividing header"><i class="ban icon"></i>Method not allowed</h1>
+    <h4>Method not allowed. Must be one of: <strong>{{ allow }}</strong></h4>
+</div>
+{% endblock %}
