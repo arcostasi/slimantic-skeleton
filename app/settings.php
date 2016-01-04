@@ -2,6 +2,8 @@
 
 return [
     'settings' => [
+        // Error Handler
+        'displayErrorDetails' => getenv('APP_DEBUG'),
         // View settings
         'view' => [
             'template_path' => PATH_APP . '/view',
@@ -29,13 +31,13 @@ return [
                 ],
                 'pgsql' => [
                     'driver' => 'pgsql',
-                    'host' => 'localhost',
-                    'database' => '',
-                    'username' => '',
-                    'password' => '',
+                    'host' => getenv('DB_HOST'),
+                    'database' => getenv('DB_DATABASE'),
+                    'username' => getenv('DB_USERNAME'),
+                    'password' => getenv('DB_PASSWORD'),
                     'charset' => 'utf8',
                     'prefix' => '',
-                    'schema' => 'public',
+                    'schema' => getenv('DB_SCHEMA'),
                 ],
             ]
         ]
