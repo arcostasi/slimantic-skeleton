@@ -1,0 +1,212 @@
+#!/usr/bin/env php
+<?php
+
+date_default_timezone_set('UTC');
+
+define("APP_NAME", 'Maker');
+define("APP_VERSION", '1.0.0');
+define('PATH_ROOT', __DIR__);
+define('PATH_APP', PATH_ROOT . '/app');
+define('PATH_DATA', PATH_ROOT . '/data');
+define('PATH_CACHE', PATH_DATA . '/cache');
+define('PATH_LOG', PATH_DATA . '/log');
+define("PATH_MIGRATIONS", __DIR__ . "/database/migrations");
+define("PATH_SEEDS", __DIR__ . "/database/seeds");
+
+require PATH_ROOT . '/vendor/autoload.php';
+
+/**
+ * Class Maker
+ */
+class Maker
+{
+    private $fgD = "\033[0;37m";
+    private $fgC = "\033[0;32m";
+    private $fgS = "\033[1;33m";
+
+    /**
+     * Maker constructor.
+     *
+     * @param $args
+     */
+    function __construct($args)
+    {
+        $this->args = $args;
+    }
+
+    /**
+     * Show menu help.
+     */
+    function help()
+    {
+        print "{$this->fgC}" . APP_NAME . "{$this->fgD} version {$this->fgS}" . APP_VERSION . "{$this->fgD}" . PHP_EOL . PHP_EOL;
+        print "{$this->fgS}Usage: {$this->fgC}php maker {$this->fgD}[command] [arguments]" . PHP_EOL . PHP_EOL;
+        print "{$this->fgS}Available commands:" . PHP_EOL;
+        print "{$this->fgC}php maker --help             {$this->fgD} Displays this help." . PHP_EOL;
+        print "{$this->fgC}php maker migrate            {$this->fgD} Migrate the database." . PHP_EOL;
+        print "{$this->fgC}php maker seed               {$this->fgD} Seed the database." . PHP_EOL;
+        print "{$this->fgC}php maker migrate --seed     {$this->fgD} Migrate and seed the database." . PHP_EOL . PHP_EOL;
+    }
+
+    /**
+     * Execute commands and arguments.
+     */
+    function run()
+    {
+        if (count($this->args) <= 1) {
+            $this->help();
+        } else {
+            switch ($this->args[1]) {
+                case "migrate":
+                    $this->createMigrations();
+                    if (!isset($this->args[2]) || $this->args[2] != '--seed')
+                        break;
+                case "seed":
+                    $this->createSeeds();
+                    break;
+                case "migrate:drop":
+                    $this->dropMigrations();
+                    break;
+                case "seed:drop":
+                    $this->dropSeeds();
+                    break;
+                default:
+                    $this->help();
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Create.
+     *
+     * @param $scripts
+     * @return void
+     */
+    private function create($scripts)
+    {
+        foreach ($scripts as $script) {
+            require_once($script);
+            $class = basename($script, '.php');
+            $obj = new $class;
+            $obj->create();
+        }
+    }
+
+    /**
+     * Drop.
+     *
+     * @param $scripts
+     * @return void
+     */
+    private function drop($scripts)
+    {
+        foreach ($scripts as $script) {
+            require_once($script);
+            $class = basename($script, '.php');
+            $obj = new $class;
+            $obj->drop();
+        }
+    }
+
+    /**
+     * Load database settings.
+     * 
+     * @return \App\Provider\DatabaseProvider
+     */
+    private function database()
+    {
+        // Instantiate the app
+        $settings = require PATH_APP . '/settings.php';
+        $settings = $settings['settings'];
+
+        $default = $settings['database']['connections'][$settings['database']['default']];
+
+        // Capsule aims to make configuring the library for usage outside of the
+        // Laravel framework as easy as possible.
+        return new \App\Provider\DatabaseProvider($default);
+    }
+
+    /**
+     * Create table migrations.
+     *
+     * @return void
+     */
+    private function createMigrations()
+    {
+        try {
+            // Load database settings
+            $this->database();
+
+            $scripts = glob(PATH_MIGRATIONS . '/*.php');
+            $this->create($scripts);
+
+            print "{$this->fgC}Migration created with success.{$this->fgD}" . PHP_EOL;
+        } catch (\Exception $e) {
+            print "{$this->fgC}Migration error: {$this->fgD}" . $e->getMessage() . PHP_EOL;
+        }
+    }
+
+    /**
+     * Drop table migrations.
+     *
+     * @return void
+     */
+    private function dropMigrations()
+    {
+        try {
+            // Load database settings
+            $this->database();
+
+            $scripts = glob(PATH_MIGRATIONS . '/*.php');
+            $this->drop($scripts);
+
+            print "{$this->fgC}Migration drop with success.{$this->fgD}" . PHP_EOL;
+        } catch (\Exception $e) {
+            print "{$this->fgC}Migration error: {$this->fgD}" . $e->getMessage() . PHP_EOL;
+        }
+    }
+
+    /**
+     * Create table seeds.
+     */
+    private function createSeeds()
+    {
+        try {
+            // Load database settings
+            $this->database();
+
+            $scripts = glob(PATH_SEEDS . '/*.php');
+            $this->create($scripts);
+
+            print "{$this->fgC}Seed created with success.{$this->fgD}" . PHP_EOL;
+        } catch (\Exception $e) {
+            print "{$this->fgC}Seed error: {$this->fgD}" . $e->getMessage() . PHP_EOL;
+        }
+    }
+
+    /**
+     * Drop table seeds.
+     */
+    private function dropSeeds()
+    {
+        try {
+            // Load database settings
+            $this->database();
+
+            $scripts = glob(PATH_SEEDS . '/*.php');
+            $this->drop($scripts);
+
+            print "{$this->fgC}Seed created with success.{$this->fgD}" . PHP_EOL;
+        } catch (\Exception $e) {
+            print "{$this->fgC}Seed error: {$this->fgD}" . $e->getMessage() . PHP_EOL;
+        }
+    }
+}
+
+$dotenv = new Dotenv\Dotenv(PATH_ROOT);
+$dotenv->load();
+
+// Create and run maker
+$maker = new Maker($argv);
+$maker->run();
