@@ -16,15 +16,7 @@ class JsonViewProvider
      */
     public function render(Response $response, $data = [], $status = 200)
     {
-        // Set status code
-        $status = intval($status);
-        // Set content-type
-        $json = $response->withStatus($status)
-            ->withHeader('Content-Type', 'application/json; charset=UTF-8');
-        // Set content body
-        $json->getBody()
-            ->write(json_encode($data));
-
-        return $json;
+        // Return JSON response
+        return $response->withJson($data, $status);
     }
 }
