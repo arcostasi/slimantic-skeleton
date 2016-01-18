@@ -58,6 +58,8 @@ $container['errorHandler'] = function ($c) {
                     'code' => $exception->getCode()
                 ];
             }
+
+            $view = $c['json']->render($c['response'], $error, $statusCode);
         } else {
             $c['response']->withHeader('Content-Type', 'text/html');
             $message = sprintf('<span>%s</span>', htmlentities($message));
@@ -74,11 +76,7 @@ $container['errorHandler'] = function ($c) {
                 $error['code'] = $exception->getCode();
                 $error['trace'] = $trace;
             }
-        }
 
-        if ($json) {
-            $view = $c['json']->render($c['response'], $error, $statusCode);
-        } else {
             $error['debug'] = $debug;
             $error['title'] = $title;
             $view = $c['view']->render($c['response'], 'error/error.twig', $error);
