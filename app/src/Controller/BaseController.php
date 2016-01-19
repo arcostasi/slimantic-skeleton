@@ -2,28 +2,19 @@
 
 namespace App\Controller;
 
-use App\Provider\JsonViewProvider as JsonView;
-use Slim\Views\Twig as View;
-use Psr\Log\LoggerInterface;
+use Interop\Container\ContainerInterface;
 
 class BaseController
 {
-    protected $view;
-    protected $json;
-    protected $logger;
-    protected $database;
+    protected $container;
 
     /**
      * Contructor Controller.
      *
-     * @param View $view
-     * @param JsonView $json
-     * @param LoggerInterface $logger
+     * @param \Interop\Container\ContainerInterface $container
      */
-    public function __construct(View $view, JsonView $json, LoggerInterface $logger)
+    public function __construct(ContainerInterface $container)
     {
-        $this->view = $view;
-        $this->json = $json;
-        $this->logger = $logger;
+        $this->container = $container;
     }
 }

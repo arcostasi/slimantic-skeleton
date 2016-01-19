@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Http\HttpException;
+use App\Exceptions\HttpException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -13,6 +13,20 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 class IndexController extends BaseController
 {
+    private $view;
+
+    /* IndexController constructor.
+     *
+     * @param View $view
+     * @param JsonView $json
+     * @param Logger $logger
+     * @param Database $database
+     */
+    public function __construct($container)
+    {
+        $this->view = $container->get('view');
+    }
+
     /**
      * Index Action.
      *

@@ -25,64 +25,8 @@ $container['json'] = function ($c) {
 
 $container['errorHandler'] = function ($c) {
     return function ($request, $response, $exception) use ($c) {
-        $settings = $c->get('settings');
-        $statusCode = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 400;
-
-        $c['response']->withStatus($statusCode);
-
-        $debug = $settings['displayErrorDetails'] == 'true' ? true : false;
-
-        $title = $debug ? 
-            'The application could not run because of the following error:' : 
-            'A website error has occurred. Sorry for the temporary inconvenience.';
-
-        $header = $request->getHeaders();
-        $message = $exception->getMessage();
-
-        $json = isset($header['HTTP_CONTENT_TYPE'][0]) && $header['HTTP_CONTENT_TYPE'][0] == 'application/json';
-
-        // Check content-type is application/json
-        if ($json) {
-            $c['response']->withHeader('Content-Type', 'application/json');
-            $error = [
-                'status' => 'error',
-                'error' => $title,
-                'statusCode' => $statusCode
-            ];
-            // Check debug
-            if ($debug) {
-                $error['details'] = [
-                    'message' => $message,
-                    'file' => $exception->getFile(),
-                    'line' => $exception->getLine(),
-                    'code' => $exception->getCode()
-                ];
-            }
-
-            $view = $c['json']->render($c['response'], $error, $statusCode);
-        } else {
-            $c['response']->withHeader('Content-Type', 'text/html');
-            $message = sprintf('<span>%s</span>', htmlentities($message));
-            $error = [
-                'type' => get_class($exception),
-                'message' => $message
-            ];
-            // Check debug
-            if ($debug) {
-                $trace = $exception->getTraceAsString();
-                $trace = sprintf('<pre>%s</pre>', htmlentities($trace));
-                $error['file'] = $exception->getFile();
-                $error['line'] = $exception->getLine();
-                $error['code'] = $exception->getCode();
-                $error['trace'] = $trace;
-            }
-
-            $error['debug'] = $debug;
-            $error['title'] = $title;
-            $view = $c['view']->render($c['response'], 'error/error.twig', $error);
-        }
-
-        return $view;
+        $handler = new \App\Exceptions\Handler($c);
+        return $handler->render($request, $response, $exception);
     };
 };
 
@@ -128,7 +72,6 @@ $container['database'] = function ($c) {
 $container['logger'] = function ($c) {
     $settings = $c->get('settings');
     $logger = new \Monolog\Logger($settings['logger']['name']);
-    $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
     $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['logger']['path'], \Monolog\Logger::DEBUG));
 
     return $logger;
@@ -138,10 +81,6 @@ $container['logger'] = function ($c) {
 // Controller factories
 // -----------------------------------------------------------------------------
 
-$container['App\Controller\IndexController'] = function ($c) {
-    return new App\Controller\IndexController($c->get('view'), $c->get('json'), $c->get('logger'));
-};
-
-$container['App\Controller\UserController'] = function ($c) {
-    return new App\Controller\UserController($c->get('view'), $c->get('json'), $c->get('logger'), $c->get('database'));
+$container['App\Controller\BaseController'] = function ($c) {
+    return new App\Controller\BaseController($c);
 };

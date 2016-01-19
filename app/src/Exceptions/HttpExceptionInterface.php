@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http;
+namespace App\Exceptions;
 
 /**
  * Interface for HTTP error exceptions.

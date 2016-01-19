@@ -18,6 +18,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 class UserController extends BaseController
 {
     private $db;
+    private $json;
 
     /**
      * UserController constructor.
@@ -27,11 +28,10 @@ class UserController extends BaseController
      * @param Logger $logger
      * @param Database $database
      */
-    public function __construct(View $view, JsonView $json, Logger $logger, Database $database)
+    public function __construct($container)
     {
-        parent::__construct($view, $json, $logger);
-
-        $this->db = $database;
+        $this->db = $container->get('database');
+        $this->json = $container->get('json');
     }
 
     /**
