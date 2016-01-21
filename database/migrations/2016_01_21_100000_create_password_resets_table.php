@@ -3,12 +3,12 @@
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 /**
- * Password reset migration.
+ * Password resets migration.
  */
 class PasswordResetTable
 {
     /**
-     * Create password reset table.
+     * Create password resets table.
      */
     public function create()
     {
@@ -21,7 +21,7 @@ class PasswordResetTable
     }
 
     /**
-     * Drop password reset table.
+     * Drop password resets table.
      */
     public function drop()
     {

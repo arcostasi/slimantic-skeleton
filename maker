@@ -78,38 +78,6 @@ class Maker
     }
 
     /**
-     * Create.
-     *
-     * @param $scripts
-     * @return void
-     */
-    private function create($scripts)
-    {
-        foreach ($scripts as $script) {
-            require_once($script);
-            $class = basename($script, '.php');
-            $obj = new $class;
-            $obj->create();
-        }
-    }
-
-    /**
-     * Drop.
-     *
-     * @param $scripts
-     * @return void
-     */
-    private function drop($scripts)
-    {
-        foreach ($scripts as $script) {
-            require_once($script);
-            $class = basename($script, '.php');
-            $obj = new $class;
-            $obj->drop();
-        }
-    }
-
-    /**
      * Load database settings.
      * 
      * @return \App\Provider\DatabaseProvider
@@ -161,7 +129,7 @@ class Maker
             $scripts = glob(PATH_MIGRATIONS . '/*.php');
             $this->drop($scripts);
 
-            print "{$this->fgC}Migration drop with success.{$this->fgD}" . PHP_EOL;
+            print "{$this->fgC}Migration removed with success.{$this->fgD}" . PHP_EOL;
         } catch (\Exception $e) {
             print "{$this->fgC}Migration error: {$this->fgD}" . $e->getMessage() . PHP_EOL;
         }
@@ -200,6 +168,69 @@ class Maker
             print "{$this->fgC}Seed created with success.{$this->fgD}" . PHP_EOL;
         } catch (\Exception $e) {
             print "{$this->fgC}Seed error: {$this->fgD}" . $e->getMessage() . PHP_EOL;
+        }
+    }
+
+    /**
+     * Return object by class script.
+     *
+     * @param $scripts
+     * @return void
+     */
+    private function getObject($script)
+    {
+        // Check script exist
+        if (file_exists($script)) {
+            // Require script
+            require_once($script);
+            // Get all classes
+            $classes = get_declared_classes();
+            // Get last class
+            $class = end($classes);
+            // Return object
+            return new $class;
+        }
+    }
+
+    /**
+     * Create method loader.
+     *
+     * @param $scripts
+     * @return void
+     */
+    private function create($scripts)
+    {
+        foreach ($scripts as $script) {
+            // Get object
+            $obj = $this->getObject($script);
+            // Check if method exist
+            if (method_exists($obj, 'create')) {
+                $obj->create();
+            } else {
+                $class = get_class($obj);
+                print "{$this->fgC}Method create not exist on {$class} class.". PHP_EOL;
+            }
+        }
+    }
+
+    /**
+     * Drop method loader.
+     *
+     * @param $scripts
+     * @return void
+     */
+    private function drop($scripts)
+    {
+        foreach ($scripts as $script) {
+            // Get object
+            $obj = $this->getObject($script);
+            // Check if method exist
+            if (method_exists($obj, 'drop')) {
+                $obj->drop();
+            } else {
+                $class = get_class($obj);
+                print "{$this->fgC}Method drop not exist on {$class} class.". PHP_EOL;
+            }
         }
     }
 }
