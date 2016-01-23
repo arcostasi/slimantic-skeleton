@@ -7,23 +7,24 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * Index Controller.
+ * Class Index Controller.
  *
  * @package App\Controller
  */
 class IndexController extends BaseController
 {
+    /** @var \Slim\Views\Twig */
     private $view;
 
-    /* IndexController constructor.
+    /**
+     * IndexController constructor.
      *
-     * @param View $view
-     * @param JsonView $json
-     * @param Logger $logger
-     * @param Database $database
+     * @param \Interop\Container\ContainerInterface $container
      */
     public function __construct($container)
     {
+        parent::__construct($container);
+
         $this->view = $container->get('view');
     }
 
@@ -45,7 +46,9 @@ class IndexController extends BaseController
     /**
      * Test exception.
      *
-     * @return App\Http\HttpException
+     * @param Request $request
+     * @param Response $response
+     * @param $args
      */
     public function test(Request $request, Response $response, $args)
     {

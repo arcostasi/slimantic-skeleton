@@ -80,7 +80,3 @@ $container['logger'] = function ($c) {
 // -----------------------------------------------------------------------------
 // Controller factories
 // -----------------------------------------------------------------------------
-
-$container['App\Controller\BaseController'] = function ($c) {
-    return new App\Controller\BaseController($c);
-};

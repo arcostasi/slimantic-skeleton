@@ -31,9 +31,10 @@ class Handler
     /**
      * Render an exception into an HTTP or JSON response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $e
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Response $response
+     * @param \Exception $exception
+     * @return mixed
      */
     public function render(Request $request, Response $response, \Exception $exception)
     {

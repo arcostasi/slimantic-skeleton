@@ -3,10 +3,6 @@
 namespace App\Controller;
 
 use App\Model\UserModel;
-use App\Provider\DatabaseProvider as Database;
-use App\Provider\JsonViewProvider as JsonView;
-use Slim\Views\Twig as View;
-use Psr\Log\LoggerInterface as Logger;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -17,19 +13,23 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 class UserController extends BaseController
 {
+    /** @var \App\Provider\DatabaseProvider */
     private $db;
+
+    /** @var \App\Provider\JsonViewProvider */
     private $json;
+
 
     /**
      * UserController constructor.
      *
-     * @param View $view
-     * @param JsonView $json
-     * @param Logger $logger
-     * @param Database $database
+     * UserController constructor.
+     * @param $container
      */
     public function __construct($container)
     {
+        parent::__construct($container);
+
         $this->db = $container->get('database');
         $this->json = $container->get('json');
     }

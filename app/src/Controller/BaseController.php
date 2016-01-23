@@ -4,7 +4,12 @@ namespace App\Controller;
 
 use Interop\Container\ContainerInterface;
 
-class BaseController
+/**
+ * Class Base Controller.
+ *
+ * @package App\Controller
+ */
+abstract class BaseController
 {
     protected $container;
 
