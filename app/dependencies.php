@@ -32,18 +32,15 @@ $container['errorHandler'] = function ($c) {
 
 $container['notFoundHandler'] = function ($c) {
     return function ($request, $response) use ($c) {
-        $c['response']->withStatus(404)
-              ->withHeader('Content-Type', 'text/html');
-        return $c['view']->render($c['response'], 'error/error404.twig');
+        $handler = new \App\Exceptions\Handler($c);
+        return $handler->renderNotFound($request, $response);
     };
 };
 
 $container['notAllowedHandler'] = function ($c) {
     return function ($request, $response, $methods) use ($c) {
-        $c['response']->withStatus(405)
-              ->withHeader('Content-Type', 'text/html');
-        $allow = implode(', ', $methods);
-        return $c['view']->render($c['response'], 'error/error405.twig', $allow);
+        $handler = new \App\Exceptions\Handler($c);
+        return $handler->renderNotAllowed($request, $response, $methods);
     };
 };
 

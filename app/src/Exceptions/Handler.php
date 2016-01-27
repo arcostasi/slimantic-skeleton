@@ -54,12 +54,15 @@ class Handler
 
         // Check content-type is application/json
         if ($json) {
+            // Define content-type to json
             $response->withHeader('Content-Type', 'application/json');
+
             $error = [
                 'status' => 'error',
                 'error' => $title,
                 'statusCode' => $statusCode
             ];
+
             // Check debug
             if ($debug) {
                 $error['details'] = [
@@ -72,12 +75,15 @@ class Handler
 
             $view = $this->json->render($response, $error, $statusCode);
         } else {
+            // Define content-type to html
             $response->withHeader('Content-Type', 'text/html');
             $message = sprintf('<span>%s</span>', htmlentities($message));
+
             $error = [
                 'type' => get_class($exception),
                 'message' => $message
             ];
+
             // Check debug
             if ($debug) {
                 $trace = $exception->getTraceAsString();
@@ -90,6 +96,7 @@ class Handler
 
             $error['debug'] = $debug;
             $error['title'] = $title;
+
             $view = $this->view->render($response, 'error/error.twig', $error);
         }
 
@@ -97,5 +104,41 @@ class Handler
         $this->log->addError($exception->getMessage());
 
         return $view;
+    }
+
+    /**
+     * Render an Not Found (404) exception into an HTTP response.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return mixed
+     */
+    public function renderNotFound(Request $request, Response $response)
+    {
+        // Define status and content-type to html
+        $response->withStatus(404)
+            ->withHeader('Content-Type', 'text/html');
+
+        return $this->view->render($response, 'error/error404.twig');
+    }
+
+    /**
+     * Render an Not Allowed (405) exception into an HTTP response.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $methods
+     * @return mixed
+     */
+    public function renderNotAllowed(Request $request, Response $response, array $methods)
+    {
+        // Define status and content-type to html
+        $response->withStatus(405)
+            ->withHeader('Content-Type', 'text/html');
+
+        // Define allow methods
+        $allow = implode(', ', $methods);
+
+        return $this->view->render($response, 'error/error405.twig', compact('allow'));
     }
 }
