@@ -2,13 +2,13 @@
 
 date_default_timezone_set('UTC');
 
-define('PATH_ROOT', dirname(__DIR__));
-define('PATH_APP', PATH_ROOT . '/app');
-define('PATH_DATA', PATH_ROOT . '/data');
-define('PATH_CACHE', PATH_DATA . '/cache');
-define('PATH_LOG', PATH_DATA . '/log');
+define('ROOT_PATH', dirname(__DIR__));
+define('APP_PATH', ROOT_PATH . '/app');
+define('DATA_PATH', ROOT_PATH . '/data');
+define('CACHE_PATH', DATA_PATH . '/cache');
+define('LOG_PATH', DATA_PATH . '/log');
 
-chdir(PATH_ROOT);
+chdir(ROOT_PATH);
 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
@@ -19,25 +19,31 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
 
-require PATH_ROOT . '/vendor/autoload.php';
+// Load all class
+require_once ROOT_PATH . '/vendor/autoload.php';
 
-$dotenv = new Dotenv\Dotenv(PATH_ROOT);
+$dotenv = new Dotenv\Dotenv(ROOT_PATH);
 $dotenv->load();
+
+// Load application settings
+$settings = require_once APP_PATH . '/settings.php';
+
+// Create container for application
+$container = new \Slim\Container($settings);
+
+// Create new application
+$app = new \Slim\App($container);
 
 session_start();
 
-// Instantiate the app
-$settings = require PATH_APP . '/settings.php';
-$app = new \Slim\App($settings);
-
 // Set up dependencies
-require PATH_APP . '/dependencies.php';
+require APP_PATH . '/dependencies.php';
 
 // Register middlewares
-require PATH_APP . '/middleware.php';
+require APP_PATH . '/middleware.php';
 
 // Register routes
-require PATH_APP . '/routes.php';
+require APP_PATH . '/routes.php';
 
 // Run!
 $app->run();

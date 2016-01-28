@@ -9,17 +9,43 @@ use Interop\Container\ContainerInterface;
  *
  * @package App\Controller
  */
-abstract class BaseController
+abstract class BaseController implements ContainerInterface
 {
+     /** @var ContainerInterface */
     protected $container;
 
     /**
-     * Contructor Controller.
+     * BaseController constructor.
      *
-     * @param \Interop\Container\ContainerInterface $container
+     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * Finds an entry of the container by its identifier and returns it.
+     *
+     * @param string $id Identifier of the entry to look for.
+     *
+     * @return mixed
+     */
+    public function get($id)
+    {
+        return $this->container->get($id);
+    }
+
+    /**
+     * Returns true if the container can return an entry for the given identifier.
+     * Returns false otherwise.
+     *
+     * @param string $id Identifier of the entry to look for.
+     *
+     * @return boolean
+     */
+    public function has($id)
+    {
+        return $this->container->has($id);
     }
 }

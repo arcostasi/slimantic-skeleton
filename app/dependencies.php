@@ -49,6 +49,10 @@ $container['flash'] = function ($c) {
     return new \Slim\Flash\Messages;
 };
 
+// -----------------------------------------------------------------------------
+// Database factories
+// -----------------------------------------------------------------------------
+
 // Service databases
 $container['database'] = function ($c) {
     $settings = $c->get('settings');
@@ -60,6 +64,23 @@ $container['database'] = function ($c) {
 
     return $database;
 };
+
+// Get settings
+$settings = $container->get('settings');
+
+// Get file models
+$models = $settings['model']['factory'];
+
+// Model factories
+foreach ($models as $alias => $model) {
+    // Model injection container
+    $container[$alias] = function ($c) use ($model) {
+        // Get database container
+        $c->get('database');
+        // Create a new database model instance
+        return new $model;
+    };
+}
 
 // -----------------------------------------------------------------------------
 // Service factories

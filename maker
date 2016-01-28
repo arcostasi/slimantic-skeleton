@@ -5,15 +5,15 @@ date_default_timezone_set('UTC');
 
 define("APP_NAME", 'Maker');
 define("APP_VERSION", '1.0.0');
-define('PATH_ROOT', __DIR__);
-define('PATH_APP', PATH_ROOT . '/app');
-define('PATH_DATA', PATH_ROOT . '/data');
-define('PATH_CACHE', PATH_DATA . '/cache');
-define('PATH_LOG', PATH_DATA . '/log');
-define("PATH_MIGRATIONS", __DIR__ . "/database/migrations");
-define("PATH_SEEDS", __DIR__ . "/database/seeds");
+define('ROOT_PATH', __DIR__);
+define('APP_PATH', ROOT_PATH . '/app');
+define('DATA_PATH', ROOT_PATH . '/data');
+define('CACHE_PATH', DATA_PATH . '/cache');
+define('LOG_PATH', DATA_PATH . '/log');
+define("MIGRATIONS_PATH", __DIR__ . "/database/migrations");
+define("SEEDS_PATH", __DIR__ . "/database/seeds");
 
-require PATH_ROOT . '/vendor/autoload.php';
+require ROOT_PATH . '/vendor/autoload.php';
 
 /**
  * Class Maker
@@ -85,7 +85,7 @@ class Maker
     private function database()
     {
         // Instantiate the app
-        $settings = require PATH_APP . '/settings.php';
+        $settings = require APP_PATH . '/settings.php';
         $settings = $settings['settings'];
 
         $default = $settings['database']['connections'][$settings['database']['default']];
@@ -106,7 +106,7 @@ class Maker
             // Load database settings
             $this->database();
 
-            $scripts = glob(PATH_MIGRATIONS . '/*.php');
+            $scripts = glob(MIGRATIONS_PATH . '/*.php');
             $this->create($scripts);
 
             print "{$this->fgC}Migration created with success.{$this->fgD}" . PHP_EOL;
@@ -126,7 +126,7 @@ class Maker
             // Load database settings
             $this->database();
 
-            $scripts = glob(PATH_MIGRATIONS . '/*.php');
+            $scripts = glob(MIGRATIONS_PATH . '/*.php');
             $this->drop($scripts);
 
             print "{$this->fgC}Migration removed with success.{$this->fgD}" . PHP_EOL;
@@ -144,7 +144,7 @@ class Maker
             // Load database settings
             $this->database();
 
-            $scripts = glob(PATH_SEEDS . '/*.php');
+            $scripts = glob(SEEDS_PATH . '/*.php');
             $this->create($scripts);
 
             print "{$this->fgC}Seed created with success.{$this->fgD}" . PHP_EOL;
@@ -162,7 +162,7 @@ class Maker
             // Load database settings
             $this->database();
 
-            $scripts = glob(PATH_SEEDS . '/*.php');
+            $scripts = glob(SEEDS_PATH . '/*.php');
             $this->drop($scripts);
 
             print "{$this->fgC}Seed created with success.{$this->fgD}" . PHP_EOL;
@@ -235,7 +235,7 @@ class Maker
     }
 }
 
-$dotenv = new Dotenv\Dotenv(PATH_ROOT);
+$dotenv = new Dotenv\Dotenv(ROOT_PATH);
 $dotenv->load();
 
 // Create and run maker

@@ -13,21 +13,6 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 class IndexController extends BaseController
 {
-    /** @var \Slim\Views\Twig */
-    private $view;
-
-    /**
-     * IndexController constructor.
-     *
-     * @param \Interop\Container\ContainerInterface $container
-     */
-    public function __construct($container)
-    {
-        parent::__construct($container);
-
-        $this->view = $container->get('view');
-    }
-
     /**
      * Index Action.
      *
@@ -38,9 +23,9 @@ class IndexController extends BaseController
      */
     public function index(Request $request, Response $response, $args)
     {
-        $this->view->render($response, 'index/home.twig');
+        $view = $this->get('view');
 
-        return $response;
+        return $view->render($response, 'index/home.twig');
     }
 
     /**

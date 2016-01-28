@@ -6,9 +6,9 @@ return [
         'displayErrorDetails' => getenv('APP_DEBUG'),
         // View settings
         'view' => [
-            'template_path' => PATH_APP . '/view',
+            'template_path' => APP_PATH . '/view',
             'twig' => [
-                'cache' => PATH_CACHE . '/twig',
+                'cache' => CACHE_PATH . '/twig',
                 'debug' => true,
                 'auto_reload' => true,
             ],
@@ -17,7 +17,7 @@ return [
         // Monolog settings
         'logger' => [
             'name' => 'app',
-            'path' => PATH_LOG . '/app.log',
+            'path' => LOG_PATH . '/app.log',
         ],
 
         // Database settings
@@ -26,7 +26,7 @@ return [
             'connections' => [
                 'sqlite' => [
                     'driver' => 'sqlite',
-                    'database' => PATH_DATA . '/database.sqlite',
+                    'database' => DATA_PATH . '/database.sqlite',
                     'prefix' => '',
                 ],
                 'pgsql' => [
@@ -39,6 +39,14 @@ return [
                     'prefix' => '',
                     'schema' => getenv('DB_SCHEMA'),
                 ],
+            ]
+        ],
+
+        // Model settings
+        'model' => [
+            'factory' => [
+                'user' => App\Model\UserModel::class,
+                'password' => App\Model\PasswordResetModel::class
             ]
         ]
     ],
