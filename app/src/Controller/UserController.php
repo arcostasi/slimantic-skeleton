@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\UserModel;
+use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -11,7 +12,7 @@ use Psr\Http\Message\ResponseInterface as Response;
  *
  * @package App\Controller
  */
-class UserController extends BaseController
+class UserController
 {
     /** @var \App\Provider\DatabaseProvider */
     private $db;
@@ -19,17 +20,13 @@ class UserController extends BaseController
     /** @var \App\Provider\JsonViewProvider */
     private $json;
 
-
     /**
      * UserController constructor.
      *
-     * UserController constructor.
-     * @param $container
+     * @param ContainerInterface $container
      */
-    public function __construct($container)
+    public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->db = $container->get('database');
         $this->json = $container->get('json');
     }

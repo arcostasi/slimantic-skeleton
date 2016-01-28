@@ -16,7 +16,7 @@ abstract class BaseController
     /**
      * Contructor Controller.
      *
-     * @param \Interop\Container\ContainerInterface $container
+     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {

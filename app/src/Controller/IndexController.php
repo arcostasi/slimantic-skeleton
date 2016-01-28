@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Exceptions\HttpException;
+use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -11,7 +12,7 @@ use Psr\Http\Message\ResponseInterface as Response;
  *
  * @package App\Controller
  */
-class IndexController extends BaseController
+class IndexController
 {
     /** @var \Slim\Views\Twig */
     private $view;
@@ -19,12 +20,10 @@ class IndexController extends BaseController
     /**
      * IndexController constructor.
      *
-     * @param \Interop\Container\ContainerInterface $container
+     * @param ContainerInterface $container
      */
-    public function __construct($container)
+    public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->view = $container->get('view');
     }
 
